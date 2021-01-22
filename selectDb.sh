@@ -13,7 +13,7 @@ function selectDB
 		echo "There are no database have this name"
 		exit
 	else
-		cd . database/$dbName 2>>./.error.log 
+		cd databases/$dbName 2>>./.error.log 
 		echo "Database $dbName was Successfully Selected"
 		#table menue
 	fi
