@@ -10,17 +10,17 @@ then
     	./main.sh
 elif [ $1 == "call" ]
 then 
+	dbExist=0
     	echo "check database existance"
 	for count in `ls databases`
 	do
 		if [ $2 == $count ]
 		then
 			dbExist=1
-			echo $dbExist
-			exit
+			#echo $dbExist
+			
 		fi
 	done	
-	dbExist=0
-	echo $dbExist
+	#echo $dbExist
 		
 fi
