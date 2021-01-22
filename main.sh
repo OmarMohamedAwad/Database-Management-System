@@ -21,6 +21,7 @@ do
         ;;
         "Exit")
             echo "DBMS Exit"
+	    exit
         ;;
         *) echo "invaled option"
         ;;
