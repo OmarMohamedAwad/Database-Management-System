@@ -2,7 +2,7 @@
 
 function createDB
 {
-	echo "Please enter unique database name"
+	echo -e "Enter Unique Database Name: \c"
 	read dbName
 
 	#Check if database exists
@@ -14,7 +14,7 @@ function createDB
        	 	mkdir databases/$dbName
         	touch databases/$dbName/Schema
 
-		echo "DataBase Successfully Created"
+		echo "DataBase $dbName Successfully Created"
 		exit
 	else 
 		echo "DataBase Already Exsits"

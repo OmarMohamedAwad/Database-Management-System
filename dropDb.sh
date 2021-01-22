@@ -2,7 +2,7 @@
 
 function dropDB
 {
-	echo "Please enter the database name you need to drop"
+	echo -e "Enter Database Name: \c"
 	read dbName
 
 	#Check if database exists
@@ -14,7 +14,7 @@ function dropDB
 		exit
 	else 
 		rm -r databases/$dbName
-		echo "DataBase Deleted Correctly"
+		echo "DataBase $dbName Deleted Correctly"
 		exit
 	fi
 
