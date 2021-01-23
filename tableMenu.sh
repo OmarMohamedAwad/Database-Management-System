@@ -27,13 +27,13 @@ do
             echo "Delete From Table"
             ./deleteRow.sh
         ;;
-	6)
+	7)
             echo "Update Table"
             ./updateTable.sh
         ;;
 
-        "Exit")
-            echo "Table Menu Exit"
+        8)
+            echo "Back To Main Menu"
 	    exit
         ;;
         *) echo "invaled option"
