@@ -1,5 +1,17 @@
 #!/bin/bash
-
+databasesIsCreated=0
+for count in `ls`
+    	do
+		if [ $count == "databases" ]
+		then
+			databasesIsCreated=1
+			break
+		fi
+done
+if [ $databasesIsCreated -eq 0 ]
+then
+	mkdir databases
+fi
 select choice in "Create Database" "List Databases" "Connect To Database" "Drop Database" "Exit"
 do
     case $choice in

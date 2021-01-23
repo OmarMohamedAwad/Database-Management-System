@@ -7,7 +7,6 @@ then
 		((num=num+1))
         	echo "$num- $count"
     	done
-    	./main.sh
 elif [ $1 == "call" ]
 then 
 	dbExist=0
