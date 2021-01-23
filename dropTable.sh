@@ -13,8 +13,8 @@ function dropTable
 		echo "There is no table by this name"
 		exit
 	else 
-		rm  databases/$1/$tblName
-		rm  databases/$1/${tblName}_schema
+		rm  databases/$currentDb/$tblName
+		rm  databases/$currentDb/${tblName}_schema
 		echo "Table $tblName Deleted Correctly"
 		exit
 	fi
