@@ -4,7 +4,7 @@ select choice in "Create Database" "List Databases" "Connect To Database" "Drop 
 do
     case $choice in
         "Create Database") 
-            echo "creating database"
+            echo "Creating database"
             ./createDb.sh
         ;;
         "List Databases")
@@ -15,8 +15,8 @@ do
             echo "Connecting to a database"
             ./selectDb.sh
         ;; 
-        "Drop Database") echo dro
-            echo "dropping a database"
+        "Drop Database")
+            echo "Dropping a database"
             ./dropDb.sh
         ;;
         "Exit")
