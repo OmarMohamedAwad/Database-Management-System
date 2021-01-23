@@ -10,7 +10,7 @@ then
 elif [ $1 == "call" ]
 then 
 	tableExist=0
-    	echo "check database existance"
+    	#echo "check table existance"
 	for count in `ls databases/$currentDb | grep -v Schema`
 	do
 		if [ $2 == $count ]

@@ -10,7 +10,7 @@ then
 elif [ $1 == "call" ]
 then 
 	dbExist=0
-    	echo "check database existance"
+    	#echo "check database existance"
 	for count in `ls databases`
 	do
 		if [ $2 == $count ]

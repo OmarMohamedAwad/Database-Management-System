@@ -6,7 +6,7 @@ function dropTable
 	read tblName
 
 	#Check if table exists
-	source ./listTable.sh "call" $tblName
+	source ./listTables.sh "call" $tblName
 
 	if [ $tableExist -eq 0 ]
 	then
@@ -14,7 +14,7 @@ function dropTable
 		exit
 	else 
 		rm  databases/$currentDb/$tblName
-		rm  databases/$currentDb/${tblName}_schema
+		rm  databases/$currentDb/${tblName}_Schema
 		echo "Table $tblName Deleted Correctly"
 		exit
 	fi
