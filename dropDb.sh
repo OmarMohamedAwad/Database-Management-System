@@ -13,7 +13,7 @@ function dropDB
 		echo "There are no database have this name"
 		exit
 	else 
-		rm -r databases/$dbName
+		rm -r databases/$dbName 2>>./.error.log
 		echo "DataBase $dbName Deleted Correctly"
 		exit
 	fi

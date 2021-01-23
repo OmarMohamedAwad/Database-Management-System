@@ -11,8 +11,8 @@ function createDB
 	if [ $dbExist -eq 0 ]
 	then
 		#create Database directory and Schema
-       	 	mkdir databases/$dbName
-        	touch databases/$dbName/Schema
+       	 	mkdir databases/$dbName 2>>./.error.log
+        	touch databases/$dbName/Schema 2>>./.error.log
 
 		echo "DataBase $dbName Successfully Created"
 		exit
