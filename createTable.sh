@@ -3,7 +3,7 @@ typeset columnArray[2]
 function checkColumn
 {
         repeatFlag=0
-        for i in columnArray[*]
+        for i in ${columnArray[@]}
         do
                 if [ $i = $1 ]
                 then
@@ -11,8 +11,33 @@ function checkColumn
                         break
                 fi
         done
-        source ./dataType.sh "check" $2 #dataTypeIsExist
+        #source ./dataType.sh "check" $2 #dataTypeIsExist
+        dataTypeIsExist=1 
 }
+
+function addPrimary
+{
+        echo -e "Enter Primary Key:\c"
+        read primaryKey
+        isExistFlag=0
+        for i in ${columnArray[@]}
+        do
+                if [ $i = $primaryKey ]
+                then
+                        (( isExistFlag=1 ))
+                        break
+                fi
+        done
+        if [ $isExistFlag -eq 0 ]
+        then
+                echo "Invalid column"
+                addPrimary
+        else
+                echo -e "$primaryKey\n" >> databases/$currentDb/${tableName}_Schema
+                echo -e "$primaryKey\n" >> databases/$currentDb/Schema        
+        fi
+}
+
 function insertCoulmn
 {
 	echo -e "Number of columns:\c"
@@ -20,24 +45,28 @@ function insertCoulmn
 	index=0
 	while ((index<columnsNumber))
 	do
-		echo -e "Enter Column ${index+1}:\c"
+                (( tracker=index + 1 ))
+		echo -e "Enter Column $tracker:\c"
 		read column
 		echo -e "Enter DataType:\c"
 		read dataType
                 checkColumn $column $dataType
-                if [ repeatFlag -eq 1 ]
+                if [ $repeatFlag -eq 1 ]
                 then
                         echo "Duplicate column name $column"
-		elif [ dataTypeIsExist -eq 0 ]
+		elif [ $dataTypeIsExist -eq 0 ]
                 then
                         echo "Datatype dose not exist"
                 else
-                       columnArray[index]=$column
-                       echo $column:$dataType, >> databases/$currentDb/${tableName}_Schema
-                       echo $column:$dataType, >> databases/$currentDb/Schema
+                       columnArray[$index]=$column
+                       echo -e "$column,$dataType,\c" >> databases/$currentDb/${tableName}_Schema
+                       echo -e "$column,$dataType,\c" >> databases/$currentDb/Schema
                        (( index+=1 ))
                 fi
 	done
+
+       addPrimary 
+        
 }
 
 #Create Table
@@ -54,11 +83,11 @@ function createTable
                 #create Table directory and Schema
                 touch databases/$currentDb/$tableName 2>>./.error.log
                 touch databases/$currentDb/${tableName}_Schema 2>>./.error.log
-                echo $tableName, >> databases/$currentDb/${tableName}_Schema
-                echo $tableName, >> databases/$currentDb/Schema
+                echo -e "$tableName,\c" >> databases/$currentDb/${tableName}_Schema
+                echo -e "$tableName,\c" >> databases/$currentDb/Schema
 
 
-                echo "Table $tableName Successfully Created"
+                echo -e "Table $tableName Successfully Created"
 		insertCoulmn
                 exit
         else
