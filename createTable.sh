@@ -33,8 +33,8 @@ function addPrimary
                 echo "Invalid column"
                 addPrimary
         else
-                echo -e "$primaryKey\n" >> databases/$currentDb/${tableName}_Schema
-                echo -e "$primaryKey\n" >> databases/$currentDb/Schema        
+                echo -e "$primaryKey" >> databases/$currentDb/${tableName}_Schema
+                echo -e "$primaryKey" >> databases/$currentDb/Schema        
         fi
 }
 
