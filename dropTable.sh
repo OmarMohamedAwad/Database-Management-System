@@ -4,7 +4,11 @@ function dropTable
 {
 	echo -e "Enter Table Name: \c"
 	read tblName
-
+	if [ $tblName = ""]
+	then
+		echo "No table name entered"
+		exit
+	fi
 	#Check if table exists
 	source ./listTables.sh "call" $tblName
 
