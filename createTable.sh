@@ -83,7 +83,7 @@ function createTable
                 #create Table directory and Schema
                 touch databases/$currentDb/$tableName 2>>./.error.log
                 touch databases/$currentDb/${tableName}_Schema 2>>./.error.log
-                echo -e "$tableName,\c" >> databases/$currentDb/${tableName}_Schema
+                #echo -e "$tableName,\c" >> databases/$currentDb/${tableName}_Schema
                 echo -e "$tableName,\c" >> databases/$currentDb/Schema
 
 
