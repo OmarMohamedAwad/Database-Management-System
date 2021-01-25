@@ -45,32 +45,31 @@ for ((j=0;j<"$fieldLoopCounter";j++));do
     ((fieldCounter=fieldCounter+1))
 done
 ((arrayCounter=arrayCounter+1))
-#echo ${fieldsArray[@]}
-#echo ${dataTypeArray[@]}
-##################################################################
-# function checkDataType
-# {
-#     echo $1
-#     echo $2
-#     #check data type
-#     for ((i=0;i<"$arrayCounter";i++));do
-#         if [ $2 = ${fieldsArray[$i]} ]
-#         then 
-#             dataTypeEntered=${dataTypeArray[$i]}
-#             break
-#         fi 
-#     done
-#     #source ./dataType.sh "checkUserInput" $1 $dataTypeEntered 
-#     echo $dataTypeEntered
-#     ((userInputDatatype=1))
-# }
+echo ${fieldsArray[@]}
+echo ${dataTypeArray[@]}
+#################################################################
+function checkDataType
+{
+    echo $1 #value by  user
+    echo $2 #clmn name
+    #check data type
+    for ((i=0;i<"$arrayCounter";i++));do
+        if [ $2 = ${fieldsArray[$i]} ]
+        then 
+            dataTypeEntered=${dataTypeArray[$i]}
+            break
+        fi 
+    done
+    #source ./dataType.sh "checkUserInput" $1 $dataTypeEntered 
+    echo $dataTypeEntered
+    ((userInputDatatype=1))
+}
 primaryKeyIsInserted=0
 function insertPrimaryKey
 {
     echo -e "First, insert primary key value."
-    #echo -e "${fieldsArray[((arrayCounter-1))]}: \c"
-    read primaryKeyYarab
-    echo $primarykeyYarab
+    echo -e "${fieldsArray[((arrayCounter-1))]}: \c"
+    read primaryKey
     if [ -z $primaryKey ]
     then
         echo "Error, empty input"
@@ -84,15 +83,13 @@ function insertPrimaryKey
             return
         fi
     done
-    echo "start dt check-------"
-    echo "test = $primarykey"
-    # checkDataType $primarykey ${fieldsArray[((arrayCounter-1))]}
-    # if [ userInputDatatype -eq 1 ]
-    # then
-    #     insertValue $primaryKey 
-    # else
-    #     echo "Error, wrong datatype"
-    # fi 
+    checkDataType $primaryKey ${fieldsArray[((arrayCounter-1))]}
+    if [ $userInputDatatype -eq 1 ]
+    then
+        insertValue $primaryKey 
+    else
+        echo "Error, wrong datatype"
+    fi 
 }
 ##################################################################
 typeset rowData[2]
@@ -113,12 +110,12 @@ function insertValue
         done
         primaryKeyIsInserted=1
     else
-        # checkDataType $clmnValue $clmnName
-        # if [ userInputDatatype -eq 0 ]
-        # then
-        #     echo "Error, wrong datatype"
-        #     return 
-        # fi 
+        checkDataType $clmnValue $clmnName
+        if [ $userInputDatatype -eq 0 ]
+        then
+            echo "Error, wrong datatype"
+            return 
+        fi 
         for ((i=0;i<"$arrayCounter";i++));do
             rowData[$rowDataCounter]=${fieldsArray[i]}
             if [ $clmnName = ${fieldsArray[i]} ]
@@ -128,22 +125,18 @@ function insertValue
             ((rowDataCounter=rowDataCounter+2))
         done
         
-    fi 
-    for ((i=0;i<"$rowDataCounter-1";i++));do
-        echo -e "${rowData[i]},\c" >> databases/$currentDb/$tblName
-    done 
-    echo -e "${rowData[((rowDataCounter-1))]}\c" >> databases/$currentDb/$tblName     
+    fi    
 }
 #####################################################################
 function checkClmn
 {
     ((clmnIsExist=0))
 
-    echo $fieldLoopCounter
-    echo "${fieldsArray[@]}"
+    #echo $fieldLoopCounter
+    #echo "${fieldsArray[@]}"
 
     for ((i=0;i<"$fieldLoopCounter";i++));do
-        if [ $1 = ${fieldsArray[i]} ]
+        if [[ $1 = ${fieldsArray[i]} ]]
         then
             ((clmnIsExist=1))
             break
@@ -183,6 +176,10 @@ do
                 fi   
             ;;
             "Exit")
+                for ((i=0;i<"$rowDataCounter-1";i++));do
+                echo -e "${rowData[i]},\c" >> databases/$currentDb/$tblName
+                done 
+                echo -e "${rowData[((rowDataCounter-1))]}\c" >> databases/$currentDb/$tblName  
                 echo "Back to table menu"
                 exit
             ;;
