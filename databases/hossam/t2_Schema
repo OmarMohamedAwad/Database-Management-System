@@ -1,2 +1,1 @@
 t2,fid,int,fname,str,lname,str,age,int,fid
-t1,id,int,fname,char,lname,char,age,int,id
