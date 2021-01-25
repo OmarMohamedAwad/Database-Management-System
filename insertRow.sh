@@ -23,7 +23,7 @@ then
     echo "Error, table dose not exist"
     exit
 fi
-echo "" >> databases/$currentDb/$tblName  #to print new line
+#echo "" >> databases/$currentDb/$tblName  #to print new line
 #################################################################
 #to count no of fields in the table
 fieldLoopCounter=`awk -F, '{ print NF }' databases/$currentDb/${tblName}_Schema `
@@ -35,7 +35,7 @@ typeset dataTypeArray[2]
 ((arrayCounter=0))
 for ((j=0;j<"$fieldLoopCounter";j++));do
     i=`cat databases/$currentDb/${tblName}_Schema | cut -f$fieldCounter -d,`
-    if [ $i != "int" -a $i != "char" -a $i != "str" ]
+    if [ $i != "int" -a $i != "varchar" -a $i != "string" ]
     then 
         fieldsArray[$arrayCounter]=$i
     else
@@ -45,13 +45,13 @@ for ((j=0;j<"$fieldLoopCounter";j++));do
     ((fieldCounter=fieldCounter+1))
 done
 ((arrayCounter=arrayCounter+1))
-echo ${fieldsArray[@]}
-echo ${dataTypeArray[@]}
+#echo ${fieldsArray[@]}
+#echo ${dataTypeArray[@]}
 #################################################################
 function checkDataType
 {
-    echo $1 #value by  user
-    echo $2 #clmn name
+   # echo $1 #value by  user
+   # echo $2 #clmn name
     #check data type
     for ((i=0;i<"$arrayCounter";i++));do
         if [ $2 = ${fieldsArray[$i]} ]
@@ -60,9 +60,9 @@ function checkDataType
             break
         fi 
     done
-    #source ./dataType.sh "checkUserInput" $1 $dataTypeEntered 
-    echo $dataTypeEntered
-    ((userInputDatatype=1))
+    source ./dataType.sh "checkUserInput" $1 $dataTypeEntered 
+    #echo $dataTypeEntered
+    #((userInputDatatype=1))
 }
 primaryKeyIsInserted=0
 function insertPrimaryKey
@@ -179,7 +179,7 @@ do
                 for ((i=0;i<"$rowDataCounter-1";i++));do
                 echo -e "${rowData[i]},\c" >> databases/$currentDb/$tblName
                 done 
-                echo -e "${rowData[((rowDataCounter-1))]}\c" >> databases/$currentDb/$tblName  
+                echo "${rowData[((rowDataCounter-1))]}" >> databases/$currentDb/$tblName  
                 echo "Back to table menu"
                 exit
             ;;

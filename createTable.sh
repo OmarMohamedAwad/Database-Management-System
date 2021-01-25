@@ -11,8 +11,7 @@ function checkColumn
                         break
                 fi
         done
-        #source ./dataType.sh "check" $2 #dataTypeIsExist
-        dataTypeIsExist=1 
+        source ./dataType.sh "check" $2
 }
 
 function addPrimary
