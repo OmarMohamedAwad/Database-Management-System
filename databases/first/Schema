@@ -1,5 +1,1 @@
-T1,id,in,name,de,id
-T2,id,in,name,aw,name
-
-T3,T3,T3,id,a,T4,id,int,name,string,T3,id,int,name,varchar,id
-T5,id,int,fname,varchar,desc,string,id
+T5,idint,fname,varchar,desc,string,age,int,id
