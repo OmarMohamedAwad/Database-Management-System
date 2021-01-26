@@ -61,7 +61,7 @@ function searchValue
         if [[ $element = $2 ]]
         then
             ((dataExistFlag=1))
-            break
+            displayData 1 $linesCounter 
         fi
     done
     if [ $dataExistFlag -eq 0 ]
@@ -71,7 +71,7 @@ function searchValue
     fi
     # q=`head -$linesCounter databases/$currentDb/${tblName} | tail -1`
     # echo $q 
-    displayData 1 $linesCounter   
+      
 }
 ##############################################################
 typeset clmnIsExist
@@ -104,21 +104,44 @@ function checkClmn
     searchValue $clmnID $clmnValue
 }
 #############################################################
+typeset -i firstRowFlag
+((firstRowFlag=0))
 function displayData
 {
-echo "----------------------------------------------------------"
-echo -e "|\c"
-for ((j=0;j<"$arrayCounter-1";j++));do
-    echo -e "${fieldsArray[j]}          |\c"
-done
-echo "${fieldsArray[j]}          "
-echo "----------------------------------------------------------"
-if [ $1 -eq 0 ] 
-then
-    typeset dataArray[1]
-    typeset dataArrayCounter=0
-    typeset linesCounter=0
-    for ((i=0;i<"$numberOfRows";i++));do
+    if [ $firstRowFlag -eq 0 ]
+    then
+        ((firstRowFlag=1))
+        echo "----------------------------------------------------------"
+        echo -e "|\c"
+        for ((j=0;j<"$arrayCounter-1";j++));do
+            echo -e "${fieldsArray[j]}          |\c"
+        done
+        echo "${fieldsArray[j]}          "
+        echo "----------------------------------------------------------"
+    fi
+    if [ $1 -eq 0 ] 
+    then
+        typeset dataArray[1]
+        typeset dataArrayCounter=0
+        typeset linesCounter=0
+        for ((i=0;i<"$numberOfRows";i++));do
+            ((dataArrayCounter=0))
+            for ((j=2;j<"$fieldLoopCounter";j=j+2));do
+                ((linesCounter=i+1))
+                element=`head -$linesCounter databases/$currentDb/${tblName} | tail -1 | cut -f$j -d,`
+                dataArray[$dataArrayCounter]=$element
+                ((dataArrayCounter=dataArrayCounter+1))
+            done
+            echo -e "|\c"
+            for ((k=0;k<"$dataArrayCounter-1";k++));do  
+                echo -e "${dataArray[k]}          |\c" 
+            done
+            echo "${dataArray[k]}          "
+            echo "----------------------------------------------------------"
+        done
+        return
+    elif [ $1 -eq 1 ]
+    then
         ((dataArrayCounter=0))
         for ((j=2;j<"$fieldLoopCounter";j=j+2));do
             ((linesCounter=i+1))
@@ -132,30 +155,14 @@ then
         done
         echo "${dataArray[k]}          "
         echo "----------------------------------------------------------"
-    done
-    return
-elif [ $1 -eq 1 ]
-then
-    ((dataArrayCounter=0))
-    for ((j=2;j<"$fieldLoopCounter";j=j+2));do
-        ((linesCounter=i+1))
-        element=`head -$linesCounter databases/$currentDb/${tblName} | tail -1 | cut -f$j -d,`
-        dataArray[$dataArrayCounter]=$element
-        ((dataArrayCounter=dataArrayCounter+1))
-    done
-    echo -e "|\c"
-    for ((k=0;k<"$dataArrayCounter-1";k++));do  
-        echo -e "${dataArray[k]}          |\c" 
-    done
-    echo "${dataArray[k]}          "
-    echo "----------------------------------------------------------"
-fi
+    fi
 }
 ###############################################################
 select choice in "Select all" "Select Row" "Exit"
 do
     case $choice in
         "Select all")
+                ((firstRowFlag=0))
                 displayData 0 
             ;;
         "Select Row")
@@ -165,6 +172,7 @@ do
                 then
                     echo "Error, empty input"
                 else
+                        ((firstRowFlag=0))
                         checkClmn $clmnName
                 fi
             ;;
