@@ -33,7 +33,7 @@ function checkColumn
 {
         echo -e "Enter Column Name: \c"
 		read columnName
-		#Chenge it when merge |
+
 		column=$(awk 'BEGIN{FS=","}{for(i=1;i<=NF;i++){if($i=="'$columnName'") print $i}}' databases/$currentDb/${tbName}_Schema)
 		if [[ $column = "" ]]
 		then
