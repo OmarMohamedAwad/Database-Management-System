@@ -5,6 +5,7 @@ read tblName
 if [ -z $tblName ]
 then
     echo "Error, empty input"
+    echo "Back to table menu"
     exit
 fi
 ((tblIsExist=0))
@@ -21,12 +22,14 @@ done
 if [ $tblIsExist -eq 0 ]
 then 
     echo "Error, table dose not exist"
+    echo "Back to table menu"
     exit
 fi
 #echo "" >> databases/$currentDb/$tblName  #to print new line
 #################################################################
 #to count no of fields in the table
 fieldLoopCounter=`awk -F, '{ print NF }' databases/$currentDb/${tblName}_Schema `
+#echo $fieldLoopCounter
 #################################################################
 #to know fields of this table
 typeset fieldsArray[2]
@@ -36,7 +39,7 @@ typeset dataTypeArray[2]
 for ((j=0;j<"$fieldLoopCounter";j++));do
     i=`cat databases/$currentDb/${tblName}_Schema | cut -f$fieldCounter -d,`
     if [ $i != "int" -a $i != "varchar" -a $i != "string" ]
-    then 
+    then
         fieldsArray[$arrayCounter]=$i
     else
         dataTypeArray[$arrayCounter]=$i
@@ -45,8 +48,8 @@ for ((j=0;j<"$fieldLoopCounter";j++));do
     ((fieldCounter=fieldCounter+1))
 done
 ((arrayCounter=arrayCounter+1))
-#echo ${fieldsArray[@]}
-#echo ${dataTypeArray[@]}
+# echo ${fieldsArray[@]}
+# echo ${dataTypeArray[@]}
 #################################################################
 function checkDataType
 {
@@ -133,8 +136,9 @@ function checkClmn
     ((clmnIsExist=0))
 
     #echo $fieldLoopCounter
-    #echo "${fieldsArray[@]}"
-
+    # echo "${fieldsArray[@]}"
+    # echo $1
+    
     for ((i=0;i<"$fieldLoopCounter";i++));do
         if [[ $1 = ${fieldsArray[i]} ]]
         then

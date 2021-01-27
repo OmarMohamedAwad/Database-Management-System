@@ -1,1 +1,1 @@
-id,int,fname,char,lname,char,age,int,id
+id,int,name,varchar,age,int,desc,string,id
