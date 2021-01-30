@@ -22,15 +22,15 @@ do
             echo "Insert into Table"
             ./insertRow.sh
         ;;
-	5)
+	    5)
             echo "Select From Table"
             ./selectRow.sh
         ;;
-	6)
+	    6)
             echo "Delete From Table"
             ./deleteRow.sh
         ;;
-	7)
+	    7)
             echo "Update Table"
             ./updateTable.sh
         ;;

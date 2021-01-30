@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Update table
 function update
 {
 	echo -e "Enter Table Name: \c"
@@ -42,6 +43,7 @@ function update
 	fi
 }
 
+# Check column
 function checkColumn
 {
 	echo -e "Enter Column Name: \c"
@@ -66,6 +68,7 @@ function checkColumn
 	fi
 }
 
+# Update Table Structure
 function updateTable
 {
 	fieldLoopCounter=`awk -F, '{ print NF }' databases/$currentDb/${tbName}_Schema `
@@ -91,6 +94,7 @@ function updateTable
 	echo "Table Structure Updated"
 }
 
+# Update Table Schema
 function updateTableSchema
 {
 	`sed -i '1,$d' databases/$currentDb/${tbName}_Schema`
@@ -105,6 +109,7 @@ function updateTableSchema
 	done 
 }
 
+# Update Database Schema
 function updateDBSchema
 {
 	sed -i "/$tbName,/d" "databases/$currentDb/Schema"
@@ -122,6 +127,7 @@ function updateDBSchema
 	done 
 }
 
+# Update Rows 
 function updateRows
 {
 	dataLoopCounter=`awk -F, '{ if(NR == 1)print NF }' databases/$currentDb/$tbName`
@@ -169,6 +175,7 @@ function updateRows
 	done 
 }
 
+# Update Rows Data
 function updateRowData 
 {
 	echo -e "Enter Column Name: \c"
@@ -233,6 +240,5 @@ function updateRowData
 		echo "You Enter Invalid Column Or Data"
 	fi		
 }
-
 
 update

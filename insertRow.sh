@@ -1,70 +1,104 @@
 #!/bin/bash
 
-#########Check table existance#############################
-echo -e "Enter table name: \c"
-read tbName
-if [ -z $tbName ]
-then
-    echo "Error, empty input"
-    echo "Back to table menu"
-    exit
-fi
-
-((tblIsExist=0))
-
-for i in `cat databases/$currentDb/Schema | cut -f1 -d,`
-do
-    if [ $i = $tbName ]
-    then 
-        ((tblIsExist=1))
-        break;
-    fi
-done
-if [ $tblIsExist -eq 0 ]
-then 
-    echo "Error, table dose not exist"
-    echo "Back to table menu"
-    exit
-fi
-PS3="hosql-${tbName}>"
-
-#################################################################
-#to count no of fields in the table
-fieldLoopCounter=`awk -F, '{ print NF }' databases/$currentDb/${tbName}_Schema `
-
-#################################################################
-#to know fields of this table
-typeset fieldsArray[2]
-typeset dataTypeArray[2]
-((fieldCounter=1))
-((arrayCounter=0))
-for ((j=0;j<"$fieldLoopCounter";j++));do
-    i=`cat databases/$currentDb/${tbName}_Schema | cut -f$fieldCounter -d,`
-    if [ $i != "int" -a $i != "varchar" -a $i != "string" ]
-    then
-        fieldsArray[$arrayCounter]=$i
-    else
-        dataTypeArray[$arrayCounter]=$i
-        ((arrayCounter=arrayCounter+1))
-    fi
-    ((fieldCounter=fieldCounter+1))
-done
-((arrayCounter=arrayCounter+1))
-
-#################################################################
-function checkDataType
+#Check table existance
+function checkTableExistance
 {
-    #check data type
-    for ((i=0;i<"$arrayCounter";i++));do
-        if [ $2 = ${fieldsArray[$i]} ]
+    echo -e "Enter table name: \c"
+    read tbName
+    if [ -z $tbName ]
+    then
+        echo "Error, empty input"
+        echo "Back to table menu"
+        exit
+    fi
+
+    tblIsExist=0
+
+    for i in `cat databases/$currentDb/Schema | cut -f1 -d,`
+    do
+        if [ $i = $tbName ]
         then 
-            dataTypeEntered=${dataTypeArray[$i]}
-            break
-        fi 
+            ((tblIsExist=1))
+            break;
+        fi
     done
-    source ./dataType.sh "checkUserInput" $1 $dataTypeEntered 
+    if [ $tblIsExist -eq 0 ]
+    then 
+        echo "Error, table dose not exist"
+        echo "Back to table menu"
+        exit
+    fi
+    PS3="hosql-${tbName}>"
 }
 
+checkTableExistance
+
+#to count number of fields in the table
+typeset fieldsArray[2]
+typeset dataTypeArray[2]
+function countTableField
+{
+    fieldLoopCounter=`awk -F, '{ print NF }' databases/$currentDb/${tbName}_Schema `
+
+    #to know fields of this table
+    ((fieldCounter=1))
+    ((arrayCounter=0))
+    for ((j=0;j<"$fieldLoopCounter";j++));do
+        i=`cat databases/$currentDb/${tbName}_Schema | cut -f$fieldCounter -d,`
+        if [ $i != "int" -a $i != "varchar" -a $i != "string" ]
+        then
+            fieldsArray[$arrayCounter]=$i
+        else
+            dataTypeArray[$arrayCounter]=$i
+            ((arrayCounter=arrayCounter+1))
+        fi
+        ((fieldCounter=fieldCounter+1))
+    done
+    ((arrayCounter=arrayCounter+1))
+}
+
+countTableField
+
+#Insert new column
+function insert
+{
+    select choice in "Insert Column" "Exit"
+    do
+        case $choice in
+            "Insert Column")
+                    if [ $primaryKeyIsInserted -eq 0 ]
+                    then 
+                        insertPrimaryKey
+                    else
+                        echo -e "Insert column name: \c"
+                        read clmnName
+                        if [ -z $clmnName ]
+                        then
+                            echo "Error, empty input"
+                        else
+                            checkClmn $clmnName
+                        fi
+                    fi   
+                ;;
+                "Exit")
+                    for ((i=0;i<"$rowDataCounter-1";i++));do
+                        echo -e "${rowData[i]},\c" >> databases/$currentDb/$tbName
+                    done 
+                    if [ ${#rowData[*]} -ne 0 ]
+                    then
+                        echo "${rowData[((rowDataCounter-1))]}" >> databases/$currentDb/$tbName
+                    fi  
+                    echo "Back to table menu"
+                    exit
+                ;;
+                *)
+                    echo "Invalid choice"
+                ;;
+        esac
+    done
+}
+
+# Check primary key
 primaryKeyIsInserted=0
 function insertPrimaryKey
 {
@@ -93,7 +127,34 @@ function insertPrimaryKey
     fi 
 }
 
-##################################################################
+#Check column 
+function checkClmn
+{
+    ((clmnIsExist=0))
+
+    for ((i=0;i<"$fieldLoopCounter";i++));do
+        if [[ $1 = ${fieldsArray[i]} ]]
+        then
+            ((clmnIsExist=1))
+            break
+        fi
+    done
+    if [ $clmnIsExist -eq 0 ]
+    then 
+        echo "Error, column dose not exist"
+        return
+    fi
+    echo -e "Insert value: \c"
+    read clmnValue
+    if [ -z $clmnValue ]
+    then
+        echo "Error, empty value"
+        return
+    fi
+    insertValue $clmnValue
+}
+
+#Insert value 
 typeset rowData[2]
 function insertValue
 {
@@ -129,64 +190,20 @@ function insertValue
         
     fi    
 }
-#####################################################################
-function checkClmn
-{
-    ((clmnIsExist=0))
 
-    for ((i=0;i<"$fieldLoopCounter";i++));do
-        if [[ $1 = ${fieldsArray[i]} ]]
-        then
-            ((clmnIsExist=1))
+#Check Column DataType
+function checkDataType
+{
+    #check data type
+    for ((i=0;i<"$arrayCounter";i++));do
+        if [ $2 = ${fieldsArray[$i]} ]
+        then 
+            dataTypeEntered=${dataTypeArray[$i]}
             break
-        fi
+        fi 
     done
-    if [ $clmnIsExist -eq 0 ]
-    then 
-        echo "Error, column dose not exist"
-        return
-    fi
-    echo -e "Insert value: \c"
-    read clmnValue
-    if [ -z $clmnValue ]
-    then
-        echo "Error, empty value"
-        return
-    fi
-    insertValue $clmnValue
+    source ./dataType.sh "checkUserInput" $1 $dataTypeEntered 
 }
 
-###############################################################
-select choice in "Insert Column" "Exit"
-do
-    case $choice in
-        "Insert Column")
-                if [ $primaryKeyIsInserted -eq 0 ]
-                then 
-                    insertPrimaryKey
-                else
-                    echo -e "Insert column name: \c"
-                    read clmnName
-                    if [ -z $clmnName ]
-                    then
-                        echo "Error, empty input"
-                    else
-                        checkClmn $clmnName
-                    fi
-                fi   
-            ;;
-            "Exit")
-                for ((i=0;i<"$rowDataCounter-1";i++));do
-                echo -e "${rowData[i]},\c" >> databases/$currentDb/$tbName
-                done 
-                echo "${rowData[((rowDataCounter-1))]}" >> databases/$currentDb/$tbName  
-                echo "Back to table menu"
-                exit
-            ;;
-            *)
-                echo "Invalid choice"
-            ;;
-    esac
-done
-
+insert
    
