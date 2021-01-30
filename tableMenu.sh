@@ -1,5 +1,7 @@
 #!/bin/bash
 
+PS3="hosql-${currentDb}>"
+
 select choice in "Create Table" "List Tables" "Drop Table" "Insert into Table" "Select From Table" "Delete From Table" "Update Table" "Exit"
 do
     case $REPLY in

@@ -6,7 +6,13 @@ function dropDB
 	read dbName
 
 	#Check if database exists
-	source ./listDb.sh "call" $dbName
+	if [ -z $dbName ]
+	then
+		echo "You Must Enter Valid Name"
+		exit
+	else 
+		source ./listDb.sh "call" $dbName
+	fi
 
 	if [ $dbExist -eq 0 ]
 	then

@@ -75,7 +75,13 @@ function createTable
         read tableName
 
         #Check if table exists
-        source ./listTables.sh "call" $tableName
+        if [ -z $tableName ]
+	then
+		echo "You Must Enter Valid Name"
+		exit
+	else 
+		source ./listTables.sh "call" $tableName
+	fi
 
         if [ $tableExist -eq 0 ]
         then

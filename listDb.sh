@@ -13,7 +13,7 @@ then
     	#echo "check database existance"
 	for count in `ls databases`
 	do
-		if [ $2 == $count ]
+		if [ $2 = $count ]
 		then
 			dbExist=1
 			#echo $dbExist

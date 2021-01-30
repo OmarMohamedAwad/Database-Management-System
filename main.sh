@@ -1,5 +1,6 @@
 #!/bin/bash
 
+PS3="hosql-main>"
 databasesIsCreated=0
 for count in `ls`
     	do
@@ -22,6 +23,7 @@ function changePermissions
 	done
 }
 changePermissions
+
 select choice in "Create Database" "List Databases" "Connect To Database" "Drop Database" "Exit"
 do
     case $choice in
@@ -42,7 +44,7 @@ do
             ./dropDb.sh
         ;;
         "Exit")
-            echo "DBMS Exit"
+            echo "hosql Exit"
 	    exit
         ;;
         *) echo "invaled option"
