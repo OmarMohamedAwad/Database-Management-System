@@ -1,4 +1,76 @@
 #!/bin/bash
+
+#Create Table
+function createTable
+{
+        echo -e "Enter Unique Table Name: \c"
+        read tableName
+
+        #Check if table exists
+        if [ -z $tableName ]
+        then
+                echo "You Must Enter Valid Name"
+                exit
+        else 
+                source ./listTables.sh "call" $tableName
+        fi
+
+        if [ $tableExist -eq 0 ]
+        then
+                #create Table directory and Schema
+                touch databases/$currentDb/$tableName 2>>./.error.log
+                touch databases/$currentDb/${tableName}_Schema 2>>./.error.log
+                #echo -e "$tableName,\c" >> databases/$currentDb/${tableName}_Schema
+                echo -e "$tableName,\c" >> databases/$currentDb/Schema
+
+
+                echo -e "Table $tableName Successfully Created"
+                insertCoulmn
+                exit
+        else
+                echo "Table Already Exsits"
+                exit
+        fi
+}
+
+function insertCoulmn
+{
+	echo -e "Number of columns:\c"
+	read columnsNumber
+	index=0
+        if [[ $columnsNumber == +([0-9]) ]]
+        then
+            while ((index<columnsNumber))
+	    do
+                (( tracker=index + 1 ))
+		echo -e "Enter Column $tracker:\c"
+		read column
+		echo -e "Enter DataType:\c"
+		read dataType
+                checkColumn $column $dataType
+                if [ $repeatFlag -eq 1 ]
+                then
+                        echo "Duplicate column name $column"
+		elif [ $dataTypeIsExist -eq 0 ]
+                then
+                        echo "Datatype dose not exist"
+                else
+                       columnArray[$index]=$column
+                       echo -e "$column,$dataType,\c" >> databases/$currentDb/${tableName}_Schema
+                       echo -e "$column,$dataType,\c" >> databases/$currentDb/Schema
+                       (( index+=1 ))
+                fi
+             done
+        else 
+                echo "Enter Valid Number"
+                insertCoulmn
+        fi
+	
+
+       addPrimary 
+        
+}
+
 typeset columnArray[2]
 function checkColumn
 {
@@ -34,70 +106,6 @@ function addPrimary
         else
                 echo -e "$primaryKey" >> databases/$currentDb/${tableName}_Schema
                 echo -e "$primaryKey" >> databases/$currentDb/Schema        
-        fi
-}
-
-function insertCoulmn
-{
-	echo -e "Number of columns:\c"
-	read columnsNumber
-	index=0
-	while ((index<columnsNumber))
-	do
-                (( tracker=index + 1 ))
-		echo -e "Enter Column $tracker:\c"
-		read column
-		echo -e "Enter DataType:\c"
-		read dataType
-                checkColumn $column $dataType
-                if [ $repeatFlag -eq 1 ]
-                then
-                        echo "Duplicate column name $column"
-		elif [ $dataTypeIsExist -eq 0 ]
-                then
-                        echo "Datatype dose not exist"
-                else
-                       columnArray[$index]=$column
-                       echo -e "$column,$dataType,\c" >> databases/$currentDb/${tableName}_Schema
-                       echo -e "$column,$dataType,\c" >> databases/$currentDb/Schema
-                       (( index+=1 ))
-                fi
-	done
-
-       addPrimary 
-        
-}
-
-#Create Table
-function createTable
-{
-        echo -e "Enter Unique Table Name: \c"
-        read tableName
-
-        #Check if table exists
-        if [ -z $tableName ]
-	then
-		echo "You Must Enter Valid Name"
-		exit
-	else 
-		source ./listTables.sh "call" $tableName
-	fi
-
-        if [ $tableExist -eq 0 ]
-        then
-                #create Table directory and Schema
-                touch databases/$currentDb/$tableName 2>>./.error.log
-                touch databases/$currentDb/${tableName}_Schema 2>>./.error.log
-                #echo -e "$tableName,\c" >> databases/$currentDb/${tableName}_Schema
-                echo -e "$tableName,\c" >> databases/$currentDb/Schema
-
-
-                echo -e "Table $tableName Successfully Created"
-		insertCoulmn
-                exit
-        else
-                echo "Table Already Exsits"
-                exit
         fi
 }
 

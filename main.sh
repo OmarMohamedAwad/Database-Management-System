@@ -2,18 +2,22 @@
 
 PS3="hosql-main>"
 databasesIsCreated=0
-for count in `ls`
-    	do
-		if [ $count == "databases" ]
-		then
-			databasesIsCreated=1
-			break
-		fi
-done
-if [ $databasesIsCreated -eq 0 ]
-then
-	mkdir databases
-fi
+function createDatabaseFolder
+{
+    for count in `ls`
+            do
+            if [ $count == "databases" ]
+            then
+                databasesIsCreated=1
+                break
+            fi
+    done
+    if [ $databasesIsCreated -eq 0 ]
+    then
+        mkdir databases
+    fi
+}
+createDatabaseFolder
 
 function changePermissions
 {

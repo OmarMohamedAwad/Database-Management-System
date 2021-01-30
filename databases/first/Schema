@@ -1,1 +1,2 @@
-T5,idint,fname,varchar,desc,string,age,int,lname,string,id,
+T1,id,int,name,string,age,int,id
+T2,id,int,name,varchar,id
