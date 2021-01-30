@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Select Database
 function selectDB
 {
 	echo -e "Enter Database Name: \c"
@@ -20,7 +21,6 @@ function selectDB
 		exit
 	else
 		currentDb=$dbName 
-		#cd databases/$dbName 2>>./.error.log 
 		echo "Database $dbName was Successfully Selected"
 		export currentDb
 		./tableMenu.sh

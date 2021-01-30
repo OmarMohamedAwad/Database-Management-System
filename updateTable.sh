@@ -6,7 +6,13 @@ function update
 	read tbName
 
 	#Check if table exists
-	source ./listTables.sh "call" $tbName
+	if [ -z $tbName ]
+	then
+		echo "You Must Enter Valid Name"
+		exit
+	else
+		source ./listTables.sh "call" $tbName
+	fi
 
 	if [ $tableExist -eq 0 ]
 	then

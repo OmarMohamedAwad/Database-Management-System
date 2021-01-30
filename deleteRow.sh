@@ -1,6 +1,67 @@
 #!/bin/bash
 
-function checkCoulmnValue 
+# Delete Rows
+function deleteRow
+{
+	echo -e "Enter Table Name: \c"
+	read tbName
+
+	#Check if table exists
+	if [ -z $tbName ]
+	then
+		echo "You Must Enter Valid Name"
+		exit
+	else
+		source ./listTables.sh "call" $tbName
+	fi
+
+	if [ $tableExist -eq 0 ]
+	then
+		echo "Error, table dose not exist"
+		exit
+	else
+		PS3="hosql-${tbName}>"
+		select choice in "Delete All Data" "Delete Special Rows" "Exit"
+		do
+			case $REPLY in
+				1) 
+					`sed -i '1,$d' databases/$currentDb/$tbName`
+					echo "All $tbName Rows Are Deleted"
+					exit
+				;;
+				2)
+					checkColumn
+					exit
+				;;
+				3)
+					exit
+				;;				
+				*) echo "invaled option"
+				;;
+			esac
+		done 
+        
+		exit
+	fi
+}
+
+function checkColumn
+{
+	echo -e "Enter Column Name: \c"
+	read columnName
+
+	column=$(awk 'BEGIN{FS=","}{for(i=1;i<=NF;i++){if($i=="'$columnName'") print $i}}' databases/$currentDb/${tbName}_Schema)
+	if [[ $column = "" ]]
+	then
+		echo "Invalid Column"
+		checkColumn
+	else
+		checkCoulmnWithValue
+		echo "All data have this value are deleted"
+	fi
+}
+
+function checkCoulmnWithValue 
 {
 	echo -e "Enter Column Value: \c"
 	read columnValue
@@ -27,59 +88,6 @@ function checkCoulmnValue
 		(( index+=1 ))
 	done
 	`sed -i $line databases/$currentDb/$tbName`
-}
-
-function checkColumn
-{
-        echo -e "Enter Column Name: \c"
-		read columnName
-
-		column=$(awk 'BEGIN{FS=","}{for(i=1;i<=NF;i++){if($i=="'$columnName'") print $i}}' databases/$currentDb/${tbName}_Schema)
-		if [[ $column = "" ]]
-		then
-			echo "Invalid Column"
-			checkColumn
-		else
-			checkCoulmnValue
-			echo "All data have this value are deleted"
-		fi
-}
-
-function deleteRow
-{
-	echo -e "Enter Table Name: \c"
-	read tbName
-
-	#Check if table exists
-	source ./listTables.sh "call" $tbName
-
-	if [ $tableExist -eq 0 ]
-	then
-		echo "There is no table by this name"
-		exit
-	else
-		select choice in "Delete All Data" "Delete Special Rows" "Exit"
-		do
-			case $REPLY in
-				1) 
-					`sed -i '1,$d' databases/$currentDb/$tbName`
-					echo "All $tbName Rows Are Deleted"
-					exit
-				;;
-				2)
-					checkColumn
-					exit
-				;;
-				3)
-					exit
-				;;				
-				*) echo "invaled option"
-				;;
-			esac
-		done 
-        
-		exit
-	fi
 }
 
 deleteRow

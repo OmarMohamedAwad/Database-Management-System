@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Drop Database
 function dropDB
 {
 	echo -e "Enter Database Name: \c"

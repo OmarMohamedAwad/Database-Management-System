@@ -20,9 +20,7 @@ function createTable
                 #create Table directory and Schema
                 touch databases/$currentDb/$tableName 2>>./.error.log
                 touch databases/$currentDb/${tableName}_Schema 2>>./.error.log
-                #echo -e "$tableName,\c" >> databases/$currentDb/${tableName}_Schema
                 echo -e "$tableName,\c" >> databases/$currentDb/Schema
-
 
                 echo -e "Table $tableName Successfully Created"
                 insertCoulmn
@@ -33,6 +31,7 @@ function createTable
         fi
 }
 
+# Insert Column
 function insertCoulmn
 {
 	echo -e "Number of columns:\c"
@@ -71,6 +70,7 @@ function insertCoulmn
         
 }
 
+# Check Column
 typeset columnArray[2]
 function checkColumn
 {
@@ -86,6 +86,7 @@ function checkColumn
         source ./dataType.sh "check" $2
 }
 
+# Add Primary Key
 function addPrimary
 {
         echo -e "Enter Primary Key:\c"

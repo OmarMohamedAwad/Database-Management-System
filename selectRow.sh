@@ -1,45 +1,48 @@
 #!/bin/bash
+
 #########Check table existance#############################
-echo -e "Insert table name: \c"
-read tblName
-if [ -z $tblName ]
+echo -e "Enter table name: \c"
+read tbName
+if [ -z $tbName ]
 then
     echo "Error, empty input"
     echo "Back to table menu"
     exit
 fi
-((tblIsExist=0))
-#((ClmnCount=0))
+tblIsExist=0
 for i in `cat databases/$currentDb/Schema | cut -f1 -d,`
 do
-    #((ClmnCount=ClmnCount+1))
-    if [ $i = $tblName ]
+    if [ $i = $tbName ]
     then 
         ((tblIsExist=1))
         break;
     fi
 done
+
 if [ $tblIsExist -eq 0 ]
 then 
     echo "Error, table dose not exist"
     echo "Back to table menu"
     exit
 fi
+
+PS3="hosql-${tbName}>"
+
 #############################################################
 #calculate number of rows
-numberOfRows=`wc -l databases/$currentDb/${tblName} | cut -f1 -d' '`
-#echo $numberOfRows
+numberOfRows=`wc -l databases/$currentDb/${tbName} | cut -f1 -d' '`
+
 #############################################################
 #to count no of fields in the table
-fieldLoopCounter=`awk -F, '{ print NF }' databases/$currentDb/${tblName}_Schema `
-#echo $fieldLoopCounter
+fieldLoopCounter=`awk -F, '{ print NF }' databases/$currentDb/${tbName}_Schema `
+
 #################################################################
 #to know columns of this table
 typeset fieldsArray[2]
 ((fieldCounter=1))
 ((arrayCounter=0))
 for ((j=0;j<"$fieldLoopCounter-1";j++));do
-    i=`cat databases/$currentDb/${tblName}_Schema | cut -f$fieldCounter -d,`
+    i=`cat databases/$currentDb/${tbName}_Schema | cut -f$fieldCounter -d,`
     if [ $i != "int" -a $i != "varchar" -a $i != "string" ]
     then
         fieldsArray[$arrayCounter]=$i
@@ -47,17 +50,15 @@ for ((j=0;j<"$fieldLoopCounter-1";j++));do
     fi
     ((fieldCounter=fieldCounter+1))
 done
-# echo ${fieldsArray[@]}
-# echo $arrayCounter
+
 ###############################################################
 function searchValue
 {
-    echo $1 $2
     typeset dataExistFlag
     ((dataExistFlag=0))
     for ((i=0;i<"$numberOfRows";i++));do
         ((linesCounter=i+1))
-        element=`head -$linesCounter databases/$currentDb/${tblName} | tail -1 | cut -f$1 -d,`
+        element=`head -$linesCounter databases/$currentDb/${tbName} | tail -1 | cut -f$1 -d,`
         if [[ $element = $2 ]]
         then
             ((dataExistFlag=1))
@@ -69,10 +70,8 @@ function searchValue
         echo "Error, Data dose not exist"
         return
     fi
-    # q=`head -$linesCounter databases/$currentDb/${tblName} | tail -1`
-    # echo $q 
-      
 }
+
 ##############################################################
 typeset clmnIsExist
 typeset clmnID #this will be used to exclusively serch the fields of the entered 
@@ -128,7 +127,7 @@ function displayData
             ((dataArrayCounter=0))
             for ((j=2;j<"$fieldLoopCounter";j=j+2));do
                 ((linesCounter=i+1))
-                element=`head -$linesCounter databases/$currentDb/${tblName} | tail -1 | cut -f$j -d,`
+                element=`head -$linesCounter databases/$currentDb/${tbName} | tail -1 | cut -f$j -d,`
                 dataArray[$dataArrayCounter]=$element
                 ((dataArrayCounter=dataArrayCounter+1))
             done
@@ -145,7 +144,7 @@ function displayData
         ((dataArrayCounter=0))
         for ((j=2;j<"$fieldLoopCounter";j=j+2));do
             ((linesCounter=i+1))
-            element=`head -$linesCounter databases/$currentDb/${tblName} | tail -1 | cut -f$j -d,`
+            element=`head -$linesCounter databases/$currentDb/${tbName} | tail -1 | cut -f$j -d,`
             dataArray[$dataArrayCounter]=$element
             ((dataArrayCounter=dataArrayCounter+1))
         done

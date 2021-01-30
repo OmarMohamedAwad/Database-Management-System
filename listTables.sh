@@ -18,7 +18,5 @@ then
 			tableExist=1
 			
 		fi
-	done	
-	#echo $tableExist
-		
+	done			
 fi

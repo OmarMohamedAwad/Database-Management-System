@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Create Database
 function createDB
 {
 	echo -e "Enter Unique Database Name: \c"

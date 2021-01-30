@@ -1,19 +1,20 @@
 #!/bin/bash
+
 #########Check table existance#############################
-echo -e "Insert table name: \c"
-read tblName
-if [ -z $tblName ]
+echo -e "Enter table name: \c"
+read tbName
+if [ -z $tbName ]
 then
     echo "Error, empty input"
     echo "Back to table menu"
     exit
 fi
+
 ((tblIsExist=0))
-#((ClmnCount=0))
+
 for i in `cat databases/$currentDb/Schema | cut -f1 -d,`
 do
-    #((ClmnCount=ClmnCount+1))
-    if [ $i = $tblName ]
+    if [ $i = $tbName ]
     then 
         ((tblIsExist=1))
         break;
@@ -25,11 +26,12 @@ then
     echo "Back to table menu"
     exit
 fi
-#echo "" >> databases/$currentDb/$tblName  #to print new line
+PS3="hosql-${tbName}>"
+
 #################################################################
 #to count no of fields in the table
-fieldLoopCounter=`awk -F, '{ print NF }' databases/$currentDb/${tblName}_Schema `
-#echo $fieldLoopCounter
+fieldLoopCounter=`awk -F, '{ print NF }' databases/$currentDb/${tbName}_Schema `
+
 #################################################################
 #to know fields of this table
 typeset fieldsArray[2]
@@ -37,7 +39,7 @@ typeset dataTypeArray[2]
 ((fieldCounter=1))
 ((arrayCounter=0))
 for ((j=0;j<"$fieldLoopCounter";j++));do
-    i=`cat databases/$currentDb/${tblName}_Schema | cut -f$fieldCounter -d,`
+    i=`cat databases/$currentDb/${tbName}_Schema | cut -f$fieldCounter -d,`
     if [ $i != "int" -a $i != "varchar" -a $i != "string" ]
     then
         fieldsArray[$arrayCounter]=$i
@@ -48,13 +50,10 @@ for ((j=0;j<"$fieldLoopCounter";j++));do
     ((fieldCounter=fieldCounter+1))
 done
 ((arrayCounter=arrayCounter+1))
-# echo ${fieldsArray[@]}
-# echo ${dataTypeArray[@]}
+
 #################################################################
 function checkDataType
 {
-   # echo $1 #value by  user
-   # echo $2 #clmn name
     #check data type
     for ((i=0;i<"$arrayCounter";i++));do
         if [ $2 = ${fieldsArray[$i]} ]
@@ -64,9 +63,8 @@ function checkDataType
         fi 
     done
     source ./dataType.sh "checkUserInput" $1 $dataTypeEntered 
-    #echo $dataTypeEntered
-    #((userInputDatatype=1))
 }
+
 primaryKeyIsInserted=0
 function insertPrimaryKey
 {
@@ -78,7 +76,7 @@ function insertPrimaryKey
         echo "Error, empty input"
         return
     fi
-    for i in `awk -F, '{print $NF}' databases/$currentDb/$tblName`
+    for i in `awk -F, '{print $NF}' databases/$currentDb/$tbName`
     do
         if [ $primaryKey = $i ]
         then
@@ -94,6 +92,7 @@ function insertPrimaryKey
         echo "Error, wrong datatype"
     fi 
 }
+
 ##################################################################
 typeset rowData[2]
 function insertValue
@@ -135,10 +134,6 @@ function checkClmn
 {
     ((clmnIsExist=0))
 
-    #echo $fieldLoopCounter
-    # echo "${fieldsArray[@]}"
-    # echo $1
-    
     for ((i=0;i<"$fieldLoopCounter";i++));do
         if [[ $1 = ${fieldsArray[i]} ]]
         then
@@ -160,6 +155,7 @@ function checkClmn
     fi
     insertValue $clmnValue
 }
+
 ###############################################################
 select choice in "Insert Column" "Exit"
 do
@@ -181,9 +177,9 @@ do
             ;;
             "Exit")
                 for ((i=0;i<"$rowDataCounter-1";i++));do
-                echo -e "${rowData[i]},\c" >> databases/$currentDb/$tblName
+                echo -e "${rowData[i]},\c" >> databases/$currentDb/$tbName
                 done 
-                echo "${rowData[((rowDataCounter-1))]}" >> databases/$currentDb/$tblName  
+                echo "${rowData[((rowDataCounter-1))]}" >> databases/$currentDb/$tbName  
                 echo "Back to table menu"
                 exit
             ;;
