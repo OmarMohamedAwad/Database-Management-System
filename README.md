@@ -45,13 +45,20 @@
     4. Insert into Table.
         * Insert into selected table.
 
-    5. Delete from Table.
+    5. Select from Table.
+        * Select all data from selected table. 
+        * Select special data from selected table.
+        
+    6. Delete from Table.
         * Delete all data from selected table. 
         * Delete special data from selected table. 
 
-    6. Update Table.
+    7. Update Table.
         * Update structure of selected table. 
-        * Update special data in selected table.    
+        * Update special data in selected table.
+        
+    8. Table Meta Data.
+        * Display table meta data. 
 ---
 
 ## hosql Data Type
