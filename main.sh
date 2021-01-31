@@ -4,7 +4,7 @@ PS3="hosql-main>"
 databasesIsCreated=0
 function createDatabaseFolder
 {
-    for count in `ls`
+    for count in `ls 2>>./.error.log`
             do
             if [ $count == "databases" ]
             then
@@ -14,14 +14,15 @@ function createDatabaseFolder
     done
     if [ $databasesIsCreated -eq 0 ]
     then
-        mkdir databases
+        mkdir databases 2>>./.error.log
     fi
 }
 createDatabaseFolder
 
+# Change all files permissions
 function changePermissions
 {
-	for script in `ls`
+	for script in `ls 2>>./.error.log`
 	do
 		chmod +x $script
 	done

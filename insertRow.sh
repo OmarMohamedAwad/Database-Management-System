@@ -38,7 +38,7 @@ typeset fieldsArray[2]
 typeset dataTypeArray[2]
 function countTableField
 {
-    fieldLoopCounter=`awk -F, '{ print NF }' databases/$currentDb/${tbName}_Schema `
+    fieldLoopCounter=`awk -F, '{ print NF }' databases/$currentDb/${tbName}_Schema 2>>./.error.log`
 
     #to know fields of this table
     ((fieldCounter=1))
@@ -110,7 +110,7 @@ function insertPrimaryKey
         echo "Error, empty input"
         return
     fi
-    for i in `awk -F, '{print $NF}' databases/$currentDb/$tbName`
+    for i in `awk -F, '{print $NF}' databases/$currentDb/$tbName 2>>./.error.log`
     do
         if [ $primaryKey = $i ]
         then

@@ -4,7 +4,7 @@
 if [ $1 == "list" ]
 then
 	num=0 
-    	for count in `ls databases`
+    	for count in `ls databases 2>>./.error.log`
     	do
 			((num=num+1))
         	echo "$num- $count"

@@ -52,7 +52,7 @@ function checkColumn
 	read columnDataType
 	source ./dataType.sh "check" $columnDataType
 
-	column=$(awk 'BEGIN{FS=","}{for(i=1;i<=NF;i++){if($i=="'$columnName'") print $i}}' databases/$currentDb/${tbName}_Schema)
+	column=$(awk 'BEGIN{FS=","}{for(i=1;i<=NF;i++){if($i=="'$columnName'") print $i}}' databases/$currentDb/${tbName}_Schema 2>>./.error.log)
 	
 	if [[ $column = "" && -n $columnName ]]
 	then
@@ -71,12 +71,12 @@ function checkColumn
 # Update Table Structure
 function updateTable
 {
-	fieldLoopCounter=`awk -F, '{ print NF }' databases/$currentDb/${tbName}_Schema `
+	fieldLoopCounter=`awk -F, '{ print NF }' databases/$currentDb/${tbName}_Schema 2>>./.error.log`
 	typeset fieldsArray[2]
 	((fieldCounter=1))
 	((arrayCounter=0))
 	for ((j=0;j<"$fieldLoopCounter";j++));do
-		i=`cat databases/$currentDb/${tbName}_Schema | cut -f$fieldCounter -d,`
+		i=`cat databases/$currentDb/${tbName}_Schema | cut -f$fieldCounter -d, 2>>./.error.log`
 		fieldsArray[$arrayCounter]=$i
 		((arrayCounter+=1))
 		((fieldCounter+=1))
@@ -130,8 +130,8 @@ function updateDBSchema
 # Update Rows 
 function updateRows
 {
-	dataLoopCounter=`awk -F, '{ if(NR == 1)print NF }' databases/$currentDb/$tbName`
-	dataLinesCounter=`cat databases/$currentDb/$tbName | wc -l`
+	dataLoopCounter=`awk -F, '{ if(NR == 1)print NF }' databases/$currentDb/$tbName 2>>./.error.log`
+	dataLinesCounter=`cat databases/$currentDb/$tbName | wc -l 2>>./.error.log`
 	
 	typeset dataFieldsArray[2]
 	for ((line=0;line<"$dataLinesCounter";line++))
@@ -140,7 +140,7 @@ function updateRows
 		((arrayCounter=0))
 		for ((j=0;j<"$dataLoopCounter";j++))
 		do
-			i=`sed -n '1p' databases/$currentDb/$tbName | cut -f$dateFieldCounter -d,`
+			i=`sed -n '1p' databases/$currentDb/$tbName | cut -f$dateFieldCounter -d, 2>>./.error.log`
 			dataFieldsArray[$arrayCounter]=$i
 			((arrayCounter+=1))
 			((dateFieldCounter+=1))
@@ -191,9 +191,9 @@ function updateRowData
 	index=0
 	isPrimaryKey=0
 
-	fieldLoopCounter=`awk -F, '{ print NF }' databases/$currentDb/${tbName}_Schema `
-	columnLines=`awk 'BEGIN{FS=","}{for(i=1;i<=NF;i++){if($i=="'$columnName'"){j=i+1; if($j == "'$previousValue'"){print NR}}}}' databases/$currentDb/$tbName`
-	columnDataType=`awk 'BEGIN{FS=","}{for(i=1;i<=NF;i++){if($i=="'$columnName'"){j=i+1; {print $j; i=NF+1}}}}' databases/$currentDb/${tbName}_Schema`
+	fieldLoopCounter=`awk -F, '{ print NF }' databases/$currentDb/${tbName}_Schema 2>>./.error.log`
+	columnLines=`awk 'BEGIN{FS=","}{for(i=1;i<=NF;i++){if($i=="'$columnName'"){j=i+1; if($j == "'$previousValue'"){print NR}}}}' databases/$currentDb/$tbName 2>>./.error.log`
+	columnDataType=`awk 'BEGIN{FS=","}{for(i=1;i<=NF;i++){if($i=="'$columnName'"){j=i+1; {print $j; i=NF+1}}}}' databases/$currentDb/${tbName}_Schema 2>>./.error.log`
 	typeset fieldsArray[2]
 	((fieldCounter=1))
 	((arrayCounter=0))
@@ -212,7 +212,7 @@ function updateRowData
 		if [ ${fieldsArray[((arrayCounter-1))]} = $columnName ]
 		then
 			((isPrimaryKey=1)) 
-			for i in `awk -F, '{print $NF}' databases/$currentDb/$tbName`
+			for i in `awk -F, '{print $NF}' databases/$currentDb/$tbName 2>>./.error.log`
 			do
 				if [ $newValue = $i ]
 				then

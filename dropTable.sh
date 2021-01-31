@@ -20,8 +20,8 @@ function dropTable
 		echo "There is no table by this name"
 		exit
 	else 
-		rm  databases/$currentDb/$tbName
-		rm  databases/$currentDb/${tbName}_Schema
+		rm  databases/$currentDb/$tbName 2>>./.error.log
+		rm  databases/$currentDb/${tbName}_Schema 2>>./.error.log
 		echo "Table $tbName Deleted Correctly"
 		exit
 	fi
