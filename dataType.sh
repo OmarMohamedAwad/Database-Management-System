@@ -5,14 +5,18 @@ shopt -s globasciiranges
 if [ $1 == "check" ]
 then
     dataTypeIsExist=0
-	if [ $2 = "int" -o $2 = "varchar" -o $2 = "string" ]
+    #check datatype existance
+    if [[ $2 != "" ]]
     then
-        dataTypeIsExist=1
+        if [ $2 = "int" -o $2 = "varchar" -o $2 = "string" ]
+        then
+            dataTypeIsExist=1
+        fi
     fi
 elif [ $1 == "checkUserInput" ]
 then 
 	userInputDatatype=0
-    #check datatype existance
+    #check values existance
 	case $3 in
         int)
         if [[ $2 == +([0-9]) ]]

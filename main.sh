@@ -1,17 +1,34 @@
 #!/bin/bash
+
+PS3="hosql-main>"
 databasesIsCreated=0
-for count in `ls`
-    	do
-		if [ $count == "databases" ]
-		then
-			databasesIsCreated=1
-			break
-		fi
-done
-if [ $databasesIsCreated -eq 0 ]
-then
-	mkdir databases
-fi
+function createDatabaseFolder
+{
+    for count in `ls 2>>./.error.log`
+            do
+            if [ $count == "databases" ]
+            then
+                databasesIsCreated=1
+                break
+            fi
+    done
+    if [ $databasesIsCreated -eq 0 ]
+    then
+        mkdir databases 2>>./.error.log
+    fi
+}
+createDatabaseFolder
+
+# Change all files permissions
+function changePermissions
+{
+	for script in `ls 2>>./.error.log`
+	do
+		chmod +x $script
+	done
+}
+changePermissions
+
 select choice in "Create Database" "List Databases" "Connect To Database" "Drop Database" "Exit"
 do
     case $choice in
@@ -32,7 +49,7 @@ do
             ./dropDb.sh
         ;;
         "Exit")
-            echo "DBMS Exit"
+            echo "hosql Exit"
 	    exit
         ;;
         *) echo "invaled option"

@@ -1,16 +1,25 @@
 #!/bin/bash
 
+# Update table
 function update
 {
 	echo -e "Enter Table Name: \c"
 	read tbName
 
 	#Check if table exists
-	source ./listTables.sh "call" $tbName
+	if [ -z $tbName ]
+	then
+		echo "You Must Enter Valid Name"
+		./redisplayMenus.sh 2
+		exit
+	else
+		source ./listTables.sh "call" $tbName
+	fi
 
 	if [ $tableExist -eq 0 ]
 	then
 		echo "There is no table by this name"
+		./redisplayMenus.sh 2
 		exit
 	else
 		select choice in "Update Table" "Update Rows" "Exit"
@@ -18,24 +27,26 @@ function update
 			case $REPLY in
 				1) 
 					checkColumn
-					exit
+					./redisplayMenus.sh 2
+		            exit
 				;;
 				2)
 					updateRowData
-					exit
+					./redisplayMenus.sh 2
+		            exit
 				;;
 				3)
-					exit
+					./redisplayMenus.sh 2
+		            exit
 				;;				
 				*) echo "invaled option"
 				;;
 			esac
-		done 
-        
-		exit
+		done         
 	fi
 }
 
+# Check column
 function checkColumn
 {
 	echo -e "Enter Column Name: \c"
@@ -44,7 +55,7 @@ function checkColumn
 	read columnDataType
 	source ./dataType.sh "check" $columnDataType
 
-	column=$(awk 'BEGIN{FS=","}{for(i=1;i<=NF;i++){if($i=="'$columnName'") print $i}}' databases/$currentDb/${tbName}_Schema)
+	column=$(awk 'BEGIN{FS=","}{for(i=1;i<=NF;i++){if($i=="'$columnName'") print $i}}' databases/$currentDb/${tbName}_Schema 2>>./.error.log)
 	
 	if [[ $column = "" && -n $columnName ]]
 	then
@@ -60,14 +71,15 @@ function checkColumn
 	fi
 }
 
+# Update Table Structure
 function updateTable
 {
-	fieldLoopCounter=`awk -F, '{ print NF }' databases/$currentDb/${tbName}_Schema `
+	fieldLoopCounter=`awk -F, '{ print NF }' databases/$currentDb/${tbName}_Schema 2>>./.error.log`
 	typeset fieldsArray[2]
 	((fieldCounter=1))
 	((arrayCounter=0))
 	for ((j=0;j<"$fieldLoopCounter";j++));do
-		i=`cat databases/$currentDb/${tbName}_Schema | cut -f$fieldCounter -d,`
+		i=`cat databases/$currentDb/${tbName}_Schema | cut -f$fieldCounter -d, 2>>./.error.log`
 		fieldsArray[$arrayCounter]=$i
 		((arrayCounter+=1))
 		((fieldCounter+=1))
@@ -85,6 +97,7 @@ function updateTable
 	echo "Table Structure Updated"
 }
 
+# Update Table Schema
 function updateTableSchema
 {
 	`sed -i '1,$d' databases/$currentDb/${tbName}_Schema`
@@ -99,6 +112,7 @@ function updateTableSchema
 	done 
 }
 
+# Update Database Schema
 function updateDBSchema
 {
 	sed -i "/$tbName,/d" "databases/$currentDb/Schema"
@@ -116,10 +130,11 @@ function updateDBSchema
 	done 
 }
 
+# Update Rows 
 function updateRows
 {
-	dataLoopCounter=`awk -F, '{ if(NR == 1)print NF }' databases/$currentDb/$tbName`
-	dataLinesCounter=`cat databases/$currentDb/$tbName | wc -l`
+	dataLoopCounter=`awk -F, '{ if(NR == 1)print NF }' databases/$currentDb/$tbName 2>>./.error.log`
+	dataLinesCounter=`cat databases/$currentDb/$tbName | wc -l 2>>./.error.log`
 	
 	typeset dataFieldsArray[2]
 	for ((line=0;line<"$dataLinesCounter";line++))
@@ -128,7 +143,7 @@ function updateRows
 		((arrayCounter=0))
 		for ((j=0;j<"$dataLoopCounter";j++))
 		do
-			i=`sed -n '1p' databases/$currentDb/$tbName | cut -f$dateFieldCounter -d,`
+			i=`sed -n '1p' databases/$currentDb/$tbName | cut -f$dateFieldCounter -d, 2>>./.error.log`
 			dataFieldsArray[$arrayCounter]=$i
 			((arrayCounter+=1))
 			((dateFieldCounter+=1))
@@ -163,6 +178,7 @@ function updateRows
 	done 
 }
 
+# Update Rows Data
 function updateRowData 
 {
 	echo -e "Enter Column Name: \c"
@@ -178,9 +194,9 @@ function updateRowData
 	index=0
 	isPrimaryKey=0
 
-	fieldLoopCounter=`awk -F, '{ print NF }' databases/$currentDb/${tbName}_Schema `
-	columnLines=`awk 'BEGIN{FS=","}{for(i=1;i<=NF;i++){if($i=="'$columnName'"){j=i+1; if($j == "'$previousValue'"){print NR}}}}' databases/$currentDb/$tbName`
-	columnDataType=`awk 'BEGIN{FS=","}{for(i=1;i<=NF;i++){if($i=="'$columnName'"){j=i+1; {print $j; i=NF+1}}}}' databases/$currentDb/${tbName}_Schema`
+	fieldLoopCounter=`awk -F, '{ print NF }' databases/$currentDb/${tbName}_Schema 2>>./.error.log`
+	columnLines=`awk 'BEGIN{FS=","}{for(i=1;i<=NF;i++){if($i=="'$columnName'"){j=i+1; if($j == "'$previousValue'"){print NR}}}}' databases/$currentDb/$tbName 2>>./.error.log`
+	columnDataType=`awk 'BEGIN{FS=","}{for(i=1;i<=NF;i++){if($i=="'$columnName'"){j=i+1; {print $j; i=NF+1}}}}' databases/$currentDb/${tbName}_Schema 2>>./.error.log`
 	typeset fieldsArray[2]
 	((fieldCounter=1))
 	((arrayCounter=0))
@@ -199,7 +215,7 @@ function updateRowData
 		if [ ${fieldsArray[((arrayCounter-1))]} = $columnName ]
 		then
 			((isPrimaryKey=1)) 
-			for i in `awk -F, '{print $NF}' databases/$currentDb/$tbName`
+			for i in `awk -F, '{print $NF}' databases/$currentDb/$tbName 2>>./.error.log`
 			do
 				if [ $newValue = $i ]
 				then
@@ -227,6 +243,5 @@ function updateRowData
 		echo "You Enter Invalid Column Or Data"
 	fi		
 }
-
 
 update
