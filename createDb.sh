@@ -10,6 +10,7 @@ function createDB
 	if [ -z $dbName ]
 	then
 		echo "You Must Enter Valid Name"
+		./redisplayMenus.sh 1
 		exit
 	else 
 		source ./listDb.sh "call" $dbName
@@ -22,9 +23,11 @@ function createDB
         touch databases/$dbName/Schema 2>>./.error.log
 
 		echo "DataBase $dbName Successfully Created"
+		./redisplayMenus.sh 1
 		exit
 	else 
 		echo "DataBase Already Exsits"
+		./redisplayMenus.sh 1
 		exit
 	fi
 

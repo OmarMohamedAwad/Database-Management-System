@@ -10,6 +10,7 @@ function createTable
         if [ -z $tableName ]
         then
                 echo "You Must Enter Valid Name"
+                ./redisplayMenus.sh 2
                 exit
         else 
                 source ./listTables.sh "call" $tableName
@@ -24,9 +25,11 @@ function createTable
 
                 echo -e "Table $tableName Successfully Created"
                 insertCoulmn
+                ./redisplayMenus.sh 2
                 exit
         else
                 echo "Table Already Exsits"
+                ./redisplayMenus.sh 2
                 exit
         fi
 }

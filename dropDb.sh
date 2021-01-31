@@ -10,6 +10,7 @@ function dropDB
 	if [ -z $dbName ]
 	then
 		echo "You Must Enter Valid Name"
+		./redisplayMenus.sh 1
 		exit
 	else 
 		source ./listDb.sh "call" $dbName
@@ -18,10 +19,12 @@ function dropDB
 	if [ $dbExist -eq 0 ]
 	then
 		echo "There are no database have this name"
+		./redisplayMenus.sh 1
 		exit
 	else 
 		rm -r databases/$dbName 2>>./.error.log
 		echo "DataBase $dbName Deleted Correctly"
+		./redisplayMenus.sh 1
 		exit
 	fi
 

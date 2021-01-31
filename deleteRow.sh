@@ -18,6 +18,7 @@ function deleteRow
 	if [ $tableExist -eq 0 ]
 	then
 		echo "Error, table dose not exist"
+		./redisplayMenus.sh 2
 		exit
 	else
 		PS3="hosql-${tbName}>"
@@ -27,13 +28,16 @@ function deleteRow
 				1) 
 					`sed -i '1,$d' databases/$currentDb/$tbName 2>>./.error.log`
 					echo "All $tbName Rows Are Deleted"
+					./redisplayMenus.sh 2
 					exit
 				;;
 				2)
 					checkColumn
+					./redisplayMenus.sh 2
 					exit
 				;;
 				3)
+					./redisplayMenus.sh 2
 					exit
 				;;				
 				*) echo "invaled option"
@@ -41,7 +45,6 @@ function deleteRow
 			esac
 		done 
         
-		exit
 	fi
 }
 

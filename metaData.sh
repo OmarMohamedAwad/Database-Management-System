@@ -10,6 +10,7 @@ function metaData
 	if [ -z $tbName ]
 	then
 		echo "You Must Enter Valid Name"
+		./redisplayMenus.sh 2
 		exit
 	else
 		source ./listTables.sh "call" $tbName
@@ -18,6 +19,7 @@ function metaData
 	if [ $tableExist -eq 0 ]
 	then
 		echo "There is no table by this name"
+		./redisplayMenus.sh 2
 		exit
 	else
 		fieldLoopCounter=`awk -F, '{ print NF }' databases/$currentDb/${tbName}_Schema 2>>./.error.log`

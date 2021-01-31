@@ -40,7 +40,8 @@ do
         ;;
         9)
             echo "Back To Main Menu"
-	        exit
+            ./redisplayMenus.sh 1
+            exit
         ;;
         *) echo "invaled option"
         ;;

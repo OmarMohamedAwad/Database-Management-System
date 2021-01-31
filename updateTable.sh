@@ -10,6 +10,7 @@ function update
 	if [ -z $tbName ]
 	then
 		echo "You Must Enter Valid Name"
+		./redisplayMenus.sh 2
 		exit
 	else
 		source ./listTables.sh "call" $tbName
@@ -18,6 +19,7 @@ function update
 	if [ $tableExist -eq 0 ]
 	then
 		echo "There is no table by this name"
+		./redisplayMenus.sh 2
 		exit
 	else
 		select choice in "Update Table" "Update Rows" "Exit"
@@ -25,21 +27,22 @@ function update
 			case $REPLY in
 				1) 
 					checkColumn
-					exit
+					./redisplayMenus.sh 2
+		            exit
 				;;
 				2)
 					updateRowData
-					exit
+					./redisplayMenus.sh 2
+		            exit
 				;;
 				3)
-					exit
+					./redisplayMenus.sh 2
+		            exit
 				;;				
 				*) echo "invaled option"
 				;;
 			esac
-		done 
-        
-		exit
+		done         
 	fi
 }
 

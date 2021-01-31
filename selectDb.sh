@@ -10,6 +10,7 @@ function selectDB
 	if [ -z $dbName ]
 	then
 		echo "You Must Enter Valid Name"
+		./redisplayMenus.sh 1
 		exit
 	else 
 		source ./listDb.sh "call" $dbName
@@ -18,7 +19,8 @@ function selectDB
 	if [ $dbExist -eq 0 ]
 	then
 		echo "There are no database have this name"
-		exit
+		./redisplayMenus.sh 1
+		exit	
 	else
 		currentDb=$dbName 
 		echo "Database $dbName was Successfully Selected"

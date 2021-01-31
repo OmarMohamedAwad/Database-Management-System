@@ -9,6 +9,7 @@ function checkTableExistance
     then
         echo "Error, empty input"
         echo "Back to table menu"
+        ./redisplayMenus.sh 2
         exit
     fi
 
@@ -26,6 +27,7 @@ function checkTableExistance
     then 
         echo "Error, table dose not exist"
         echo "Back to table menu"
+        ./redisplayMenus.sh 2
         exit
     fi
     PS3="hosql-${tbName}>"
@@ -89,6 +91,7 @@ function insert
                         echo "${rowData[((rowDataCounter-1))]}" >> databases/$currentDb/$tbName
                     fi  
                     echo "Back to table menu"
+                    ./redisplayMenus.sh 2
                     exit
                 ;;
                 *)

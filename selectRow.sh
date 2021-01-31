@@ -9,7 +9,8 @@ function checkTableExistance
     then
         echo "Error, empty input"
         echo "Back to table menu"
-        exit
+        ./redisplayMenus.sh 2
+		exit
     fi
     tblIsExist=0
     for i in `cat databases/$currentDb/Schema | cut -f1 -d,`
@@ -25,7 +26,8 @@ function checkTableExistance
     then 
         echo "Error, table dose not exist"
         echo "Back to table menu"
-        exit
+        ./redisplayMenus.sh 2
+		exit
     fi
 
     PS3="hosql-${tbName}>"
@@ -80,7 +82,8 @@ function selectRows
                 ;;
             "Exit")
                     echo "Back to table menu"
-                    exit
+                    ./redisplayMenus.sh 2
+		            exit
                 ;;
             *)
                     echo "Invalid choice"
