@@ -18,7 +18,7 @@ function dropDB
 
 	if [ $dbExist -eq 0 ]
 	then
-		echo "There are no database have this name"
+		echo "There is no database has this name"
 		./redisplayMenus.sh 1
 		exit
 	else 

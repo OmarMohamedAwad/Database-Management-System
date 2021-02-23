@@ -24,6 +24,7 @@ function dropTable
 	else 
 		rm  databases/$currentDb/$tbName 2>>./.error.log
 		rm  databases/$currentDb/${tbName}_Schema 2>>./.error.log
+		sed -i "/$tbName,/d" "databases/$currentDb/Schema" 
 		echo "Table $tbName Deleted Correctly"
 		./redisplayMenus.sh 2
 		exit

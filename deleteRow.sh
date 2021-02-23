@@ -57,7 +57,7 @@ function checkColumn
 	if [[ $column = "" ]]
 	then
 		echo "Invalid Column"
-		checkColumn
+		#checkColumn
 	else
 		checkCoulmnWithValue
 		echo "All data have this value are deleted"
@@ -86,7 +86,7 @@ function checkCoulmnWithValue
 		then
 			line+="${i}d" 
 		else
-			line+="${i}d;"
+			line+="${i}d;" 
 		fi
 		(( index+=1 ))
 	done

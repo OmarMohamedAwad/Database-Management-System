@@ -18,12 +18,12 @@ function selectDB
 
 	if [ $dbExist -eq 0 ]
 	then
-		echo "There are no database have this name"
+		echo "There is no database has this name"
 		./redisplayMenus.sh 1
 		exit	
 	else
 		currentDb=$dbName 
-		echo "Database $dbName was Successfully Selected"
+		echo "Database $dbName is Successfully Selected"
 		export currentDb
 		./tableMenu.sh
 	fi
